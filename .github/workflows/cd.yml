@@ -30,15 +30,17 @@ jobs:
 
       - name: Build & Push
         env:
-          IMAGE: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ github.sha }}
+          IMAGE_SHA:    ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ github.sha }}
+          IMAGE_LATEST: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:latest
         run: |
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          docker build -t $IMAGE_SHA -t $IMAGE_LATEST .
+          docker push $IMAGE_SHA
+          docker push $IMAGE_LATEST
 
       - name: Update Lambda
         env:
-          IMAGE: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ github.sha }}
+          IMAGE_LATEST: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:latest
         run: |
           aws lambda update-function-code \
             --function-name ${{ env.FUNCTION_NAME }} \
-            --image-uri $IMAGE
+            --image-uri $IMAGE_LATEST
