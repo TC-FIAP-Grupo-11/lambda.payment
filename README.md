@@ -6,7 +6,7 @@ AWS Lambda para processamento de pagamentos da plataforma FIAP Cloud Games.
 ## Responsabilidade
 
 Processar eventos de `OrderPlacedEvent` — simula o processamento de pagamento e retorna o resultado.
-
+ 
 > Esta Lambda é invocada diretamente pelo `FCG.Api.Payments` via AWS SDK (não por SQS trigger), já que o RabbitMQ rodando no EKS não pode acionar Lambdas nativamente.
 
 ## Estrutura
