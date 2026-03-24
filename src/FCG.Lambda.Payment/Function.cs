@@ -75,7 +75,7 @@ public class Function
         await _sqsClient.SendMessageAsync(new SendMessageRequest
         {
             QueueUrl = _paymentProcessedQueueUrl,
-            MessageBody = JsonSerializer.Serialize(result)
+            MessageBody = JsonSerializer.Serialize(result, JsonOptions)
         });
 
         context.Logger.LogInformation(
@@ -84,10 +84,8 @@ public class Function
 
     public static (bool Success, string Message) SimulatePayment(OrderPlacedEvent order, ILambdaContext context)
     {
-        // Replica o comportamento do SimulatedPaymentService:
-        // cartão de teste "4111111111111111" — aprovado se não começar com "0000"
-        const string testCard = "4111111111111111";
-        var success = !testCard.StartsWith("0000");
+        // Rejeita se price for zero; caso contrário aprova (simulação)
+        var success = order.Price > 0;
         var status = success ? "APPROVED" : "DECLINED";
         var message = success
             ? $"Payment approved for order {order.OrderId}"

@@ -5,7 +5,7 @@ WORKDIR /src
 COPY src/FCG.Lambda.Payment/FCG.Lambda.Payment.csproj .
 RUN dotnet restore
 COPY src/FCG.Lambda.Payment/ .
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c Release -r linux-x64 --no-self-contained -o /app/publish
 
 FROM base AS final
 COPY --from=build /app/publish ${LAMBDA_TASK_ROOT}
