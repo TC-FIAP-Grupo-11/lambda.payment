@@ -24,6 +24,14 @@ jobs:
           aws-session-token:     ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region:            ${{ env.AWS_REGION }}
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Lambda artifact
+        run: dotnet publish src/FCG.Lambda.Payment/FCG.Lambda.Payment.csproj -c Release -r linux-x64 --no-self-contained -o ./publish
+
       - name: Login to ECR
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
